@@ -1,0 +1,10 @@
+@use '../vars/colors.scss';
+
+.danger-text {
+    color: colors.$danger;
+}
+
+.success-text {
+    color: colors.$success;
+}
+

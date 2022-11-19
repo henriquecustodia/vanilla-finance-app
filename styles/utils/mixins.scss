@@ -1,0 +1,7 @@
+@use '../vars/breakpoints.scss';
+
+@mixin min-xs() {
+    @media screen and (min-width: breakpoints.$xs) {
+        @content;
+    }
+}

@@ -1,0 +1,6 @@
+@use '../vars/breakpoints.scss';
+
+.page-container {
+    width: 100%;
+    max-width: breakpoints.$xs;
+}

@@ -1,0 +1,14 @@
+@use '../vars/colors.scss';
+
+.primary-btn {
+    background: colors.$primary;
+    color: colors.$white;
+    padding: 8px 16px;
+    border: 0;
+    border-radius: 8px;
+    cursor: pointer;
+
+    &:hover, &:focus {
+        background: lighten(colors.$primary, 7);
+    }
+}
