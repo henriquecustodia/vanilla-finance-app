@@ -1,3 +1,3 @@
 export interface ElementEvent {
-    [prop: string]: () => void
+    [prop: string]: (event: any) => void
 }

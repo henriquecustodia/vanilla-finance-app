@@ -1,7 +1,7 @@
 @use '../vars/colors.scss';
 
-.primary-btn {
-    background: colors.$primary;
+@mixin button($color) {
+    background: $color;
     color: colors.$white;
     padding: 8px 16px;
     border: 0;
@@ -9,6 +9,15 @@
     cursor: pointer;
 
     &:hover, &:focus {
-        background: lighten(colors.$primary, 7);
+        background: lighten($color, 7);
     }
+}
+
+.primary-btn {
+    @include button(colors.$primary);
+}
+
+
+.secondary-btn {
+    @include button(colors.$secondary);
 }

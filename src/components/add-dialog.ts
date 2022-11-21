@@ -1,7 +1,14 @@
 import { createButton } from "../shared/elements/buttons";
+import { createInput } from "../shared/elements/input";
+import { createRadio } from "../shared/elements/radio";
 import { append } from "../shared/functions/append";
 import { createElement } from "../shared/functions/create-element";
 import { Item } from "../shared/interfaces/item";
+
+enum RegisterType {
+    Expense,
+    Income
+}
 
 interface DialogEvents {
     onSave: (item: Item) => void,
@@ -9,110 +16,126 @@ interface DialogEvents {
 }
 
 export function createAddDialog(events: DialogEvents) {
-    let registerType: string;
+    let registerType: RegisterType = RegisterType.Expense;
     let value: number = 0;
     let description: string = '';
 
-    const backdropEl = createElement('div');
-    backdropEl.classList.add('backdrop');
+    const backdropEl = createElement('div', {
+        classList: ['backdrop']
+    });
 
     const dialogEl = createElement('div', {
+        classList: ['dialog', 'flex-column']
+    });
+
+    const formEl = createElement('form', {
         classList: ['flex-column']
     });
-    dialogEl.classList.add('dialog');
 
     const h1El = createElement('h1');
     h1El.textContent = 'Movimentação';
 
-    const expenseRadioEl = createElement('input') as HTMLInputElement;
-    expenseRadioEl.type = 'radio';
-    expenseRadioEl.id = 'expense';
-    expenseRadioEl.name = 'register-type';
-    expenseRadioEl.value = 'expense';
-    expenseRadioEl.textContent = 'Gasto';
-
-    expenseRadioEl.addEventListener('input', () => {
-        registerType = expenseRadioEl.value;
+    const expenseRadioEl = createRadio({
+        groupName: 'register-type',
+        label: 'Gasto',
+        name: 'expense',
+        value: RegisterType.Expense,
+        checked: true,
+        events: {
+            input: (event) => {
+                registerType = event.target.value;
+            }
+        }
     });
 
-    const expenseRadioElLabelEl = createElement('label') as any;
-    expenseRadioElLabelEl.for = 'expense';
-    expenseRadioElLabelEl.name = 'register-type';
-    expenseRadioElLabelEl.textContent = 'Gasto';
-
-    const incomeRadioEl = createElement('input') as HTMLInputElement;
-    incomeRadioEl.type = 'radio';
-    incomeRadioEl.id = 'income';
-    incomeRadioEl.name = 'register-type';
-    incomeRadioEl.value = 'income';
-    incomeRadioEl.textContent = 'Receita';
-
-    incomeRadioEl.addEventListener('input', () => {
-        registerType = incomeRadioEl.value;
+    const incomeRadioEl = createRadio({
+        groupName: 'register-type',
+        label: 'Receita',
+        name: 'income',
+        value: RegisterType.Income,
+        events: {
+            input: (event) => {
+                registerType = event.target.value;
+            }
+        }
     });
 
-    const incomeRadioLabelEl = createElement('label') as any;
-    incomeRadioLabelEl.for = 'income';
-    incomeRadioLabelEl.name = 'register-type';
-    incomeRadioLabelEl.textContent = 'Receita';
-
-    const valueEl = createElement('input') as HTMLInputElement;
-    valueEl.type = 'number';
-    valueEl.value = String(value);
-    valueEl.placeholder = 'value';
-    valueEl.classList.add('mt-3');
-
-    valueEl.addEventListener('input', () => {
-        value = Number(valueEl.value);
+    const valueEl = createInput({
+        type: 'number',
+        label: 'Valor',
+        placeholder: 'Digite o valor da movimentação',
+        events: {
+            input: (event) => {
+                value = Number(event.target.value);
+            }
+        },
+        classList: [
+            'mt-3'
+        ]
     });
 
-    const descriptionEl = createElement('input') as HTMLInputElement;
-    descriptionEl.type = 'text';
-    descriptionEl.value = String(description);
-    descriptionEl.placeholder = 'Descrição';
-    descriptionEl.classList.add('mt-3');
-
-    descriptionEl.addEventListener('input', () => {
-        description = descriptionEl.value;
+    const descriptionEl = createInput({
+        type: 'text',
+        label: 'Descrição',
+        placeholder: 'Digite a descrição da movimentação',
+        events: {
+            input: (event) => {
+                description = event.target.value;
+            }
+        },
+        classList: [
+            'mt-3'
+        ]
     });
 
     const buttonContainerEl = createElement('div', {
         classList: [
             'flex-row',
+            'justify-end',
             'mt-3'
         ]
     });
 
-    const cancelButtonEl = createButton('secondary', 'Cancelar');
-    const saveButtonEl = createButton('primary', 'Salvar', { classList: ['ml-2'] });
-
-    saveButtonEl.addEventListener('click', () => {
-
-        if (registerType === 'expense') {
-            value = value * -1;
+    const cancelButtonEl = createButton('secondary', 'Cancelar', {
+        events: {
+            click: () => events.onCancel()
         }
-
-        events.onSave({
-            value,
-            text: description
-        });
     });
+
+    const saveButtonEl = createButton('primary', 'Salvar', {
+        classList: ['ml-2'],
+        events: {
+            click: () => {
+                if (registerType === RegisterType.Expense) {
+                    value = value * -1;
+                }
+
+                events.onSave({
+                    value,
+                    text: description
+                });
+            }
+        }
+    });
+
+    append(dialogEl, h1El);
+
+    append(dialogEl, formEl);
+
+    append(formEl, [
+        expenseRadioEl,
+        incomeRadioEl
+    ]);
+
+    append(formEl, valueEl);
+
+    append(formEl, descriptionEl);
 
     append(buttonContainerEl, [
         cancelButtonEl,
         saveButtonEl
     ]);
-
-    append(dialogEl, h1El);
-    append(dialogEl, [
-        expenseRadioEl,
-        expenseRadioElLabelEl, 
-        incomeRadioEl,
-        incomeRadioLabelEl
-    ]);
-    append(dialogEl, valueEl);
-    append(dialogEl, descriptionEl);
-    append(dialogEl, buttonContainerEl);
+    append(formEl, buttonContainerEl);
 
     return [backdropEl, dialogEl];
 }

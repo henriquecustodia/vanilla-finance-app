@@ -1,0 +1,15 @@
+@use '../vars/colors.scss';
+
+.input {
+    padding: 8px;
+    border-radius: 8px;
+    border: 1px solid colors.$border;
+
+    &:hover {
+        border: 1px solid darken(colors.$border, 50);
+    }
+    
+    &:focus {
+        outline: none;
+    }   
+}

@@ -1,5 +1,5 @@
 export function append(host: HTMLElement | null, elements: HTMLElement | HTMLElement[]) {
-    if(!host) {
+    if (!host) {
         return;
     }
 
